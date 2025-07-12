@@ -1,7 +1,7 @@
-extends Spatial
+extends Node3D
 
-onready var AnimPlayer = $AnimationPlayer
-onready var GunSound = $shot
+@onready var AnimPlayer = $AnimationPlayer
+@onready var GunSound = $shot
 
 
 func _ready():
@@ -12,4 +12,4 @@ func Shoot():
 		pass
 	else:
 		AnimPlayer.play("gun")
-		GunSound.set_pitch_scale(rand_range(.7,.9))
+		GunSound.set_pitch_scale(randf_range(.7,.9))

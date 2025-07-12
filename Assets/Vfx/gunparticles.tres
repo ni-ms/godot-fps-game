@@ -1,4 +1,4 @@
-[gd_resource type="ParticlesMaterial" format=2]
+[gd_resource type="ParticleProcessMaterial" format=2]
 
 [resource]
 gravity = Vector3( 0, 0, 0 )

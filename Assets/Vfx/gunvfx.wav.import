@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/gunvfx.wav-cc5f161687f771032f1c7b2bbcee8bd6.sample"
+type="AudioStreamWAV"
+uid="uid://cfdnn8wjthcmp"
+path="res://.godot/imported/gunvfx.wav-cc5f161687f771032f1c7b2bbcee8bd6.sample"
 
 [deps]
 
 source_file="res://Assets/Vfx/gunvfx.wav"
-dest_files=[ "res://.import/gunvfx.wav-cc5f161687f771032f1c7b2bbcee8bd6.sample" ]
+dest_files=["res://.godot/imported/gunvfx.wav-cc5f161687f771032f1c7b2bbcee8bd6.sample"]
 
 [params]
 
