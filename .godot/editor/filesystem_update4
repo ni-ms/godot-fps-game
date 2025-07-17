@@ -1,3 +1,7 @@
-res://default_env.tres
-res://Scene/Map.tscn
-res://Assets/Vfx/gunflash.tres
+res://scenes/player.tscn
+res://scenes/main.tscn
+res://scenes/hud.tscn
+res://scenes/coin.tscn
+res://scripts/coin.gd
+res://scripts/main.gd
+res://scripts/hud.gd

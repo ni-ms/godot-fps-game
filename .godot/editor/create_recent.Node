@@ -1,0 +1,10 @@
+Node3D
+Label
+CanvasLayer
+MeshInstance3D
+CollisionShape3D
+Area3D
+DirectionalLight3D
+CharacterBody3D
+Camera3D
+StaticBody3D
