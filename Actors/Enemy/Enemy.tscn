@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cauyo7knj087a"]
+
+[ext_resource type="Script" uid="uid://qgx5m2l0d50y" path="res://Actors/Enemy/enemy.gd" id="1_2r3fe"]
+
+[node name="Node3D" type="CharacterBody3D"]
+script = ExtResource("1_2r3fe")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="Timer" type="Timer" parent="."]

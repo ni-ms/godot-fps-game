@@ -1,109 +1,121 @@
 extends CharacterBody3D
 
-var speed = 7
-const ACCEL_DEFAULT = 7
-const ACCEL_AIR = 1
-@onready var accel = ACCEL_DEFAULT
-var gravity = 9.8
-var jump = 5
+# --- CONFIGURATION ---
 
-var cam_accel = 40
-var mouse_sense = 0.1
-var snap
+@export_category("Movement Speeds")
+@export var walk_speed: float = 5.0
+@export var run_speed: float = 8.0
+@export var crouch_speed: float = 3.0
+@export var acceleration: float = 10.0
+@export var friction: float = 12.0
+@export var air_control: float = 3.0
 
-var direction = Vector3()
-var velocity = Vector3()
-var gravity_direction = Vector3()
-var movement = Vector3()
+@export_category("Physics")
+@export var gravity_multiplier: float = 1.5
+@export var jump_height: float = 1.5
+@export var weight: float = 3.0
 
-@onready var head = $Head
-@onready var camera = $Head/Camera3D
+@export_category("Camera & Feel")
+@export var mouse_sensitivity: float = 0.002
+@export var bob_freq: float = 2.4
+@export var bob_amp: float = 0.08
+@export var base_fov: float = 75.0
+@export var run_fov: float = 85.0
+@export var crouch_depth: float = -0.5
+@export var crouch_lerp_speed: float = 10.0
 
-# Weapon System
-var weapons = []
-var current_weapon_index = 0
+@onready var head: Node3D = $Head
+@onready var eyes: Node3D = $Head/Eyes
+@onready var camera: Camera3D = $Head/Eyes/Camera3D
+@onready var hand: Node3D = $Hand
+@onready var gun1: Node3D = $Hand/gun1
 
-@onready var gun1 = $Head/Hand/gun1
+var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var speed: float = walk_speed
+var t_bob: float = 0.0
+var default_head_y: float = 0.0
+var target_head_y: float = 0.0
 
-func weapon_select():
-	
-	if Input.is_action_just_pressed("weapon1"):
-		if current_weapon_index == 1:
-			current_weapon_index = 0
-		else:
-			current_weapon_index = 1
-		
-		
-
-	if current_weapon_index == 1:
-		gun1.visible = true
-	else:
-		gun1.visible = false
-	
-
-		
-func switch_weapon():
-		current_weapon_index += 1
-		
-		if current_weapon_index >= weapons.size():
-			current_weapon_index = 0
-
-func _ready():
-	#hides the cursor
+func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	camera.current = true
+	default_head_y = head.position.y
+	target_head_y = default_head_y
 
-func _input(event):
-	#get mouse input for camera rotation
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		rotate_y(deg_to_rad(-event.relative.x * mouse_sense))
-		head.rotate_x(deg_to_rad(-event.relative.y * mouse_sense))
-		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+		rotate_y(-event.relative.x * mouse_sensitivity)
+		eyes.rotate_x(-event.relative.y * mouse_sensitivity)
+		eyes.rotation.x = clamp(eyes.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+		
+		# Weapon Sway
+		hand.rotation.y = lerp(hand.rotation.y, -event.relative.x * 0.005, 0.1)
+		hand.rotation.x = lerp(hand.rotation.x, -event.relative.y * 0.005, 0.1)
 
-func _process(delta):
-	#camera physics interpolation to reduce physics jitter on high refresh-rate monitors
-	if Engine.get_frames_per_second() > Engine.physics_ticks_per_second:
-		camera.set_as_top_level(true)
-		camera.global_transform.origin = camera.global_transform.origin.lerp(head.global_transform.origin, cam_accel * delta)
-		camera.rotation.y = rotation.y
-		camera.rotation.x = head.rotation.x
-	else:
-		camera.set_as_top_level(false)
-		camera.global_transform = head.global_transform
-		
-func _physics_process(delta):
-	#shooting mechanism
-	
+func _physics_process(delta: float) -> void:
+	# 1. SHOOTING
 	if Input.is_action_just_pressed("left_click"):
-		gun1.Shoot()
-	
-	#get keyboard input
-	direction = Vector3.ZERO
-	var h_rot = global_transform.basis.get_euler().y
-	var f_input = Input.get_action_strength("back") - Input.get_action_strength("forward")
-	var h_input = Input.get_action_strength("right") - Input.get_action_strength("left")
-	direction = Vector3(h_input, 0, f_input).rotated(Vector3.UP, h_rot).normalized()
-	
-	#jumping and gravity
-	if is_on_floor():
-		snap = -get_floor_normal()
-		accel = ACCEL_DEFAULT
-		gravity_direction = Vector3.ZERO
+		if gun1.has_method("Shoot"):
+			gun1.Shoot()
+			eyes.rotation.x += 0.005
+
+	# 2. MOVEMENT STATE
+	var is_crouching = Input.is_action_pressed("crouch")
+	var is_sprinting = Input.is_action_pressed("run")
+	var current_fov = base_fov
+
+	if is_crouching:
+		speed = crouch_speed
+		target_head_y = default_head_y + crouch_depth
+	elif is_sprinting and is_on_floor():
+		speed = run_speed
+		target_head_y = default_head_y
+		current_fov = run_fov
 	else:
-		snap = Vector3.DOWN
-		accel = ACCEL_AIR
-		gravity_direction += Vector3.DOWN * gravity * delta
+		speed = walk_speed
+		target_head_y = default_head_y
+	
+	camera.fov = lerp(camera.fov, current_fov, delta * 8.0)
+	head.position.y = lerp(head.position.y, target_head_y, delta * crouch_lerp_speed)
+
+	# 3. GRAVITY
+	if not is_on_floor():
+		velocity.y -= gravity * weight * delta
+
+	# 4. JUMP
+	if Input.is_action_just_pressed("jump") and is_on_floor() and not is_crouching:
+		velocity.y = sqrt(jump_height * 2.0 * gravity * gravity_multiplier)
+
+	# 5. MOVEMENT CALCULATION
+	# REVERTED TO STANDARD: Left, Right, Forward, Back
+	var input_dir := Input.get_vector("left", "right", "forward", "back")
+	var direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+
+	if is_on_floor():
+		if direction:
+			# Using lerp for smooth start (fixes the jerkiness)
+			velocity.x = lerp(velocity.x, direction.x * speed, acceleration * delta)
+			velocity.z = lerp(velocity.z, direction.z * speed, acceleration * delta)
+		else:
+			# Using move_toward for friction (prevents slippery sliding when stopping)
+			velocity.x = move_toward(velocity.x, 0.0, friction * delta)
+			velocity.z = move_toward(velocity.z, 0.0, friction * delta)
+	else:
+		if direction:
+			velocity.x = lerp(velocity.x, direction.x * speed, air_control * delta)
+			velocity.z = lerp(velocity.z, direction.z * speed, air_control * delta)
+
+	# 6. HEAD BOB
+	if velocity.length() > 0.1 and is_on_floor():
+		t_bob += delta * velocity.length()
+		var pos = Vector3.ZERO
+		pos.y = sin(t_bob * bob_freq) * bob_amp
+		pos.x = cos(t_bob * bob_freq / 2) * bob_amp
 		
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		snap = Vector3.ZERO
-		gravity_direction = Vector3.UP * jump
-	
-	#make it move
-	velocity = velocity.lerp(direction * speed, accel * delta)
-	movement = velocity + gravity_direction
-	
-	set_velocity(movement)
-	# TODOConverter3To4 looks that snap in Godot 4 is float, not vector like in Godot 3 - previous value `snap`
-	set_up_direction(Vector3.UP)
+		# Smooth bob transition
+		camera.transform.origin = camera.transform.origin.lerp(pos, delta * 15.0)
+	else:
+		camera.transform.origin = camera.transform.origin.lerp(Vector3.ZERO, delta * 10.0)
+
+	hand.rotation = hand.rotation.lerp(Vector3.ZERO, 8.0 * delta)
 	move_and_slide()
-	
-	

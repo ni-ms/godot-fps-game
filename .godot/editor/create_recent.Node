@@ -1,0 +1,8 @@
+Timer
+NavigationAgent3D
+CollisionShape3D
+MeshInstance3D
+CharacterBody3D
+DirectionalLight3D
+Node3D
+WorldEnvironment

@@ -1,9 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://0uf6vhmvk6dl"]
+[gd_scene load_steps=10 format=3 uid="uid://0uf6vhmvk6dl"]
 
 [ext_resource type="Texture2D" uid="uid://dwbal0j738v4q" path="res://Assets/Img/ground.jpg" id="1"]
 [ext_resource type="Texture2D" uid="uid://boo5u6wjfvbfu" path="res://Assets/Img/slope_texture.jpg" id="2"]
 [ext_resource type="Texture2D" uid="uid://b5xxepk7tn7gm" path="res://Assets/Img/cube_face.jpg" id="3"]
-[ext_resource type="PackedScene" path="res://Actors/Player/Player.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://mriuxxhitqq4" path="res://Actors/Player/Player.tscn" id="4"]
 
 [sub_resource type="StandardMaterial3D" id="1"]
 albedo_texture = ExtResource("1")
@@ -14,9 +14,19 @@ albedo_texture = ExtResource("3")
 [sub_resource type="StandardMaterial3D" id="3"]
 albedo_texture = ExtResource("2")
 
+[sub_resource type="Sky" id="Sky_040fq"]
+
+[sub_resource type="Environment" id="Environment_040fq"]
+background_mode = 2
+sky = SubResource("Sky_040fq")
+ambient_light_source = 3
+ambient_light_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
+ambient_light_energy = 0.5
+
 [node name="Map" type="Node3D"]
 
 [node name="Player" parent="." instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 1.0646572)
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
 use_collision = true
@@ -36,3 +46,9 @@ material = SubResource("2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 polygon = PackedVector2Array(-4.5, 0, -1, 1, 1, 1, 1, 0)
 material = SubResource("3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_040fq")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 30, 1.382)
