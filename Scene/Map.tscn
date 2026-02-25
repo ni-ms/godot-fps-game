@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://0uf6vhmvk6dl"]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Texture2D" uid="uid://dwbal0j738v4q" path="res://Assets/Img/ground.jpg" id="1"]
 [ext_resource type="Texture2D" uid="uid://boo5u6wjfvbfu" path="res://Assets/Img/slope_texture.jpg" id="2"]
 [ext_resource type="Texture2D" uid="uid://b5xxepk7tn7gm" path="res://Assets/Img/cube_face.jpg" id="3"]
-[ext_resource type="PackedScene" uid="uid://mriuxxhitqq4" path="res://Actors/Player/Player.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Actors/Player/Player.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Scene/TargetDummy.tscn" id="6"]
 
 [sub_resource type="StandardMaterial3D" id="1"]
 albedo_texture = ExtResource("1")
@@ -23,32 +24,41 @@ ambient_light_source = 3
 ambient_light_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
 ambient_light_energy = 0.5
 
-[node name="Map" type="Node3D"]
+[node name="Map" type="Node3D" unique_id=1203380987]
 
-[node name="Player" parent="." instance=ExtResource("4")]
+[node name="Player" parent="." unique_id=502687643 instance=ExtResource("4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 1.0646572)
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=2068054576]
 use_collision = true
 collision_mask = 0
 
-[node name="Ground" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="Ground" type="CSGBox3D" parent="CSGCombiner3D" unique_id=503107939]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0361218, -0.0264329, -0.149784)
 size = Vector3(30, 1, 30)
 material = SubResource("1")
 
-[node name="Box" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, -6.5)
-size = Vector3(1, 3, 5)
+[node name="Box" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1648391460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.286775, 8.26915, -1.6852264)
+size = Vector3(1, 20.663086, 32.096222)
 material = SubResource("2")
 
-[node name="Slope" type="CSGPolygon3D" parent="CSGCombiner3D"]
+[node name="Slope" type="CSGPolygon3D" parent="CSGCombiner3D" unique_id=408089528]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 polygon = PackedVector2Array(-4.5, 0, -1, 1, 1, 1, 1, 0)
 material = SubResource("3")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1446541176]
 environment = SubResource("Environment_040fq")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.8660254, -0.35355338, 0.35355338, 0, 0.70710677, 0.70710677, -0.5, -0.6123724, 0.6123724, 0, 30, 1.382)
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=150613987]
+transform = Transform3D(0.8660254, -0.3535534, 0.3535534, 0, 0.7071068, 0.7071068, -0.5, -0.61237246, 0.61237246, -17.935831, 8.7697735, 1.382)
+
+[node name="TargetDummy" parent="." unique_id=1280238571 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -10)
+
+[node name="TargetDummy2" parent="." unique_id=604370973 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -15)
+
+[node name="TargetDummy3" parent="." unique_id=1404978698 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20)
