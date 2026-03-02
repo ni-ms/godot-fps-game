@@ -1,4 +1,1 @@
 res://default_env.tres
-res://Scene/PauseMenu.tscn
-res://Scene/HUD.tscn
-res://Scripts/PauseMenu.gd

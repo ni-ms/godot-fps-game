@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponStats" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/WeaponStats.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_name = "RIFLE"
+mag_size = 30
+reserve_ammo = 120
+damage = 25.0
+ads_position = Vector3(-0.5, 0.38, 0.45)
+ads_fov_multiplier = 0.7
+recoil_kick = 0.25
+recoil_rotation = 0.15
+recoil_return_speed = 12.0
+shoot_animation = "gun"
+reload_animation = "reload"
+sway_amount = 0.03
+sway_lerp = 5.0

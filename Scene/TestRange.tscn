@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Texture2D" uid="uid://dwbal0j738v4q" path="res://Assets/Img/ground.jpg" id="1"]
+[ext_resource type="Texture2D" uid="uid://boo5u6wjfvbfu" path="res://Assets/Img/slope_texture.jpg" id="2"]
+[ext_resource type="PackedScene" path="res://Actors/Player/Player.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://Scene/TargetDummy.tscn" id="4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
+albedo_texture = ExtResource("1")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wall"]
+albedo_color = Color(0.4, 0.4, 0.45, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orange"]
+albedo_color = Color(1, 0.5, 0, 1)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_test"]
+sky_top_color = Color(0.384314, 0.454902, 0.54902, 1)
+
+[sub_resource type="Sky" id="Sky_test"]
+sky_material = SubResource("ProceduralSkyMaterial_test")
+
+[sub_resource type="Environment" id="Environment_test"]
+background_mode = 2
+sky = SubResource("Sky_test")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="TestRange" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_test")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
+shadow_enabled = true
+directional_shadow_mode = 0
+
+[node name="Player" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 10)
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+use_collision = true
+collision_mask = 2
+
+[node name="Floor" type="CSGBox3D" parent="CSGCombiner3D"]
+size = Vector3(100, 1, 100)
+material = SubResource("StandardMaterial3D_floor")
+
+[node name="Wall_Back" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -50)
+size = Vector3(100, 10, 2)
+material = SubResource("StandardMaterial3D_wall")
+
+# Parkour Zone
+[node name="ParkourZone" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.5, 0)
+
+[node name="MantleBox" type="CSGBox3D" parent="ParkourZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+use_collision = true
+size = Vector3(4, 2, 2)
+material = SubResource("StandardMaterial3D_orange")
+
+[node name="HighWall" type="CSGBox3D" parent="ParkourZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.5, 0)
+use_collision = true
+size = Vector3(1, 5, 20)
+material = SubResource("StandardMaterial3D_wall")
+
+[node name="NarrowPath" type="CSGBox3D" parent="ParkourZone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 4, 0)
+use_collision = true
+size = Vector3(1, 0.2, 10)
+material = SubResource("StandardMaterial3D_orange")
+
+# Firing Range
+[node name="FiringRange" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.5, 0)
+
+[node name="Target10m" parent="FiringRange" instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -10)
+
+[node name="Target25m" parent="FiringRange" instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -25)
+
+[node name="Target50m" parent="FiringRange" instance=ExtResource("4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -50)

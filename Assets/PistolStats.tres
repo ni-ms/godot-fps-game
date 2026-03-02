@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponStats" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/WeaponStats.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_name = "PISTOL"
+mag_size = 15
+reserve_ammo = 45
+damage = 15.0
+ads_position = Vector3(-0.5, 0.45, 0.45)
+ads_fov_multiplier = 0.8
+recoil_kick = 0.1
+recoil_rotation = 0.2
+recoil_return_speed = 20.0
+shoot_animation = ""
+reload_animation = ""
+sway_amount = 0.02
+sway_lerp = 8.0

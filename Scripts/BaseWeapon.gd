@@ -1,4 +1,5 @@
 extends Node3D
+class_name BaseWeapon
 
 @export var stats: WeaponStats
 
@@ -33,7 +34,7 @@ func _physics_process(delta: float) -> void:
 	var mouse_input = Input.get_last_mouse_velocity() * 0.001
 	current_sway = current_sway.lerp(Vector2(mouse_input.x, mouse_input.y), delta * stats.sway_lerp)
 	
-	# 3. APPLY PROCEDURAL POSITION (Standardized with stats)
+	# 3. APPLY PROCEDURAL POSITION
 	var target_pos = default_position.lerp(stats.ads_position, ads_lerp)
 	position = target_pos + weapon_recoil_pos
 	
@@ -57,11 +58,11 @@ func Shoot() -> bool:
 	weapon_recoil_rot -= stats.recoil_rotation
 	
 	if GunSound:
-		GunSound.set_pitch_scale(randf_range(.9, 1.1))
+		GunSound.set_pitch_scale(randf_range(.8, 1.2))
 		GunSound.play()
-	
-	if AnimPlayer and not AnimPlayer.is_playing():
-		AnimPlayer.play("shoot") # Assuming shoot for gun2
+		
+	if AnimPlayer and stats.shoot_animation != "" and AnimPlayer.has_animation(stats.shoot_animation):
+		AnimPlayer.play(stats.shoot_animation)
 		
 	return true
 
@@ -74,5 +75,5 @@ func Reload():
 	current_mag += refill
 	reserve_ammo -= refill
 	
-	if AnimPlayer and AnimPlayer.has_animation("reload"):
-		AnimPlayer.play("reload")
+	if AnimPlayer and stats.reload_animation != "" and AnimPlayer.has_animation(stats.reload_animation):
+		AnimPlayer.play(stats.reload_animation)

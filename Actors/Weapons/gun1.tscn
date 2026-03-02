@@ -1,9 +1,10 @@
 [gd_scene load_steps=10 format=3 uid="uid://ciosdqvh52p33"]
 
-[ext_resource type="Script" uid="uid://cq0ap7jbo2d7r" path="res://Actors/Weapons/gun1.gd" id="1"]
+[ext_resource type="Script" path="res://Scripts/BaseWeapon.gd" id="1"]
 [ext_resource type="AudioStream" uid="uid://cfdnn8wjthcmp" path="res://Assets/Vfx/gunvfx.wav" id="2"]
 [ext_resource type="Material" path="res://Assets/Vfx/gunparticles.tres" id="3"]
 [ext_resource type="QuadMesh" uid="uid://btskqic6b47kr" path="res://Assets/Vfx/gunflash.tres" id="4"]
+[ext_resource type="Resource" path="res://Assets/RifleStats.tres" id="5"]
 
 [sub_resource type="Animation" id="1"]
 length = 0.001
@@ -125,6 +126,7 @@ height = 0.5
 
 [node name="gun1" type="Node3D"]
 script = ExtResource("1")
+stats = ExtResource("5")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0998908, 0, -0.00412369)
@@ -135,7 +137,7 @@ libraries = {
 &"": SubResource("AnimationLibrary_rebf5")
 }
 
-[node name="shot" type="AudioStreamPlayer3D" parent="."]
+[node name="shot" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2")
 
 [node name="flash" type="GPUParticles3D" parent="."]
